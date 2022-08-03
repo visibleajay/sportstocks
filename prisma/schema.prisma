@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  mobileNumber String   @unique
+  otp          Int
+  token        String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // transaction Transaction[] @relation("GeneratedTransaction")
+  completedTransaction Transaction[] @relation("CompletedTransaction")
+  Password             Password?
+}
+
+model Password {
+  hash   String
+  userId String @unique
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Match {
+  id      String   @id @default(cuid())
+  team1   String
+  team2   String
+  type    String
+  date    String
+  players Player[]
+}
+
+model Player {
+  id          String        @id @default(cuid())
+  name        String
+  team        String
+  type        String
+  score       Int
+  status      String
+  matchId     String
+  match       Match         @relation(fields: [matchId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transaction Transaction[]
+}
+
+model Transaction {
+  id            String  @id @default(cuid())
+  min           Int
+  max           Int
+  price         Int
+  quantity      Int
+  playerId      String
+  type          String
+  status        String  @default("MY_ORDER")
+  player        Player  @relation(fields: [playerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  generatedBy   String
+  // generatedUser User @relation("GeneratedTransaction", fields: [generatedBy], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  completedBy   String?
+  completedUser User?   @relation(name: "CompletedTransaction", fields: [completedBy], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
