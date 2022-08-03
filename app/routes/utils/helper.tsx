@@ -7,9 +7,9 @@ export const toTitleCase = (str: string) => {
     .join(" ");
 };
 
-export const toInitialCase = (str: string) => {
+export const toInitialCase = (str: string = " ") => {
   const fullName: string[] = str.split(" ");
-  const initials = fullName?.shift()?.charAt(0) + fullName?.pop()?.charAt(0);
+  const initials = (fullName.shift() || "").charAt(0) + (fullName.pop() || "").charAt(0);
   return initials.toUpperCase();
 };
 

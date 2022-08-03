@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { action } from "..";
+import { createTransaction } from "~/models/game.server";
 
 const validationSchema = yup.object().shape({
   player: yup.string().required("Player is required!"),
@@ -52,7 +53,8 @@ export default function AddOrder({
   });
 
   useEffect(() => {
-    if (actionData?.id && actionData?.id.length) {
+    // @ts-ignore
+    if (actionData.hasOwnProperty("id") && actionData?.id.length) {
       reset(initial_values);
       onClose(false);
     }
@@ -62,7 +64,6 @@ export default function AddOrder({
     <div
       className="modal fade fixed top-0 left-0 hidden h-full w-full overflow-y-auto overflow-x-hidden bg-gray-500 bg-opacity-75 outline-none transition-opacity"
       style={{ display: isAddOrder ? "block" : "none" }}
-      tabIndex="-1"
       aria-labelledby="addOrder"
       aria-modal="true"
       role="dialog"
@@ -101,7 +102,11 @@ export default function AddOrder({
               handleSubmit(() => submit(event.target))(event);
             }}
           >
-            <input type="hidden" name="userId" value="cl6apo2830009uuozlgjtejt6" />
+            <input
+              type="hidden"
+              name="userId"
+              value="cl6apo2830009uuozlgjtejt6"
+            />
             <input type="hidden" name="type" value={stockType} />
             <div className="w-full flex-1">
               <InputLabel id="selectPlayer">Select Player</InputLabel>
@@ -189,11 +194,13 @@ function Error(props: JSX.IntrinsicElements["div"]) {
   return <div {...props} className="mx-0.5 text-xs text-red-700" />;
 }
 function ServerError({ name }: { name: string }) {
+  // @ts-ignore
   const errors = useActionData<typeof action>()?.errors;
-  const message = errors?.find(({ path }) => path[0] === name)?.message;
+  const message = errors?.name?.message;
   if (!message) return null;
   return <Error>{message}</Error>;
 }
+
 function FieldError({ name, errors }: { name: string; errors: any }) {
   const message = errors[name]?.message;
   if (message) {

@@ -42,6 +42,10 @@ export async function createUser(mobile: number) {
   return { response, smsResponse };
 }
 
+export async function getUserID(userId: string) {
+  return prisma.user.findUnique({where: {id: userId}});
+}
+
 function generateOTP() {
   const digits = "0123456789";
   let OTP = "";
@@ -50,3 +54,4 @@ function generateOTP() {
   }
   return +OTP;
 }
+
