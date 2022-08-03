@@ -1,3 +1,4 @@
+export {}
 // import type { User, Note } from "@prisma/client";
 
 // import { prisma } from "~/db.server";
