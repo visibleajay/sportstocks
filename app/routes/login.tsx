@@ -9,6 +9,7 @@ export async function action({ request }: ActionArgs) {
 
   const mobileRegex = /^\d{10}$/;
 
+  // @ts-ignore
   const mobile_number = +mobile;
   if (isNaN(mobile_number) || !mobileRegex.test(mobile + "")) {
     return json(
@@ -17,6 +18,7 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
+  // @ts-ignore
   return createUser(mobile);
 }
 
