@@ -54,7 +54,7 @@ export default function AddOrder({
 
   useEffect(() => {
     // @ts-ignore
-    if (actionData.hasOwnProperty("id") && actionData?.id.length) {
+    if (actionData && actionData.hasOwnProperty("id") && actionData?.id.length) {
       reset(initial_values);
       onClose(false);
     }
