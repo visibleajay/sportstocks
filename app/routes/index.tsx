@@ -7,10 +7,12 @@ import List from "./stocks/list";
 import {
   createTransaction,
   getMatches,
+  getPlayerById,
   getPlayers,
   getTransactions,
 } from "~/models/game.server";
 import type { Match, Player, Transaction } from "~/models/game.server";
+import { getUserID } from "~/models/login.server";
 
 export type NormalizedPlayer = {
   [key: string]: Player;
@@ -36,64 +38,59 @@ export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const userId = formData.get("userId");
   const playerId = formData.get("player");
+  const type = formData.get("type");
   const min = formData.get("min");
   const max = formData.get("max");
   const price = formData.get("price");
   const quantity = formData.get("quantity");
-  const type = formData.get("type");
 
-  const errors: {
-    [key: string]: null | string;
-  } = {
-    type: null,
-    player: null,
-    min: null,
-    max: null,
-    price: null,
-    quantity: null,
+  const isNumber = (val: FormDataEntryValue | null): boolean => {
+    return typeof val === "number" || (typeof val === "string" && !isNaN(+val));
   };
 
-  if (typeof type === "string" && !["buy", "sell"].includes(type)) {
-    errors.type = "Provide valid Type";
-  }
-
-  if (typeof playerId !== "string" || playerId.length === 0) {
-    errors.playerId = "Player is missing";
-  }
-
-  if (typeof min !== "number" || (typeof min === "number" && isNaN(min))) {
-    errors.min = "Provide valid min.";
-  }
-
-  if (typeof max !== "number" || (typeof max === "number" && isNaN(max))) {
-    errors.max = "Provide valid max.";
-  }
-
-  if (
-    typeof price !== "number" ||
-    (typeof price === "number" && isNaN(price))
-  ) {
-    errors.price = "Provide valid price.";
-  }
-
-  if (
-    typeof quantity !== "number" ||
-    (typeof quantity === "number" && isNaN(quantity))
-  ) {
-    errors.quantity = "Provide valid quantity.";
-  }
+  const errors = {
+    type:
+      typeof type === "string" && ["buy", "sell"].includes(type)
+        ? null
+        : "Valid Type is Required",
+    player: typeof playerId === "string" ? null : "Valid Player is Required",
+    min: isNumber(min) ? null : "Valid Min is Required",
+    max: isNumber(max) ? null : "Valid Max is Required",
+    price: isNumber(price) ? null : "Valid Price is Required",
+    quantity: isNumber(quantity) ? null : "Valid Quantity is Required",
+    userId: typeof userId === "string" ? null : "Valid User is Required",
+  };
 
   if (Object.values(errors).some((val) => val !== null)) {
     return json({ errors }, { status: 400 });
   }
 
+  // @ts-ignore
+  const player = await getPlayerById(playerId);
+  if (!player) {
+    return json({ errors: { player: "Player is missing" } }, { status: 400 });
+  }
+
+  // @ts-ignore
+  // const user = await getUserID(userId);
+  // if (!user) {
+  //   return json({ errors: { userId: "User is missing" } }, { status: 400 });
+  // }
+
   return createTransaction({
+    // @ts-ignore
     type,
+    // @ts-ignore
     playerId,
+    // @ts-ignore
     min: +min,
+    // @ts-ignore
     max: +max,
+    // @ts-ignore
     price: +price,
+    // @ts-ignore
     quantity: +quantity,
+    // @ts-ignore
     generatedBy: userId,
   });
 }
