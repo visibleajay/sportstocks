@@ -29,27 +29,32 @@ export type { User } from "@prisma/client";
 export async function createUser(mobile: number) {
   const otp = generateOTP();
 
-  let response = await prisma.user.create({
+  const user = await prisma.user.create({
     data: { mobileNumber: mobile + "", otp },
   });
 
+  if (!user) {
+    return null;
+  }
   // let smsResponse = {};
   // if (response.id) {
   //   // smsResponse = await sentSMS(mobile, otp);
   // }
 
-  return response;
+  const { otp: a1, ...userWithoutOTP } = user;
+
+  return userWithoutOTP;
 }
 
-export async function getUserID(userId: string) {
+export async function getUserById(userId: string) {
   return prisma.user.findUnique({ where: { id: userId } });
 }
 
 function generateOTP() {
-  const digits = "0123456789";
+  const digits = "123456789";
   let OTP = "";
-  for (let i = 0; i < 4; i++) {
-    OTP += digits[Math.floor(Math.random() * 10)];
+  for (let i = 0; i < 6; i++) {
+    OTP += digits[Math.floor(Math.random() * 9)];
   }
   return +OTP;
 }

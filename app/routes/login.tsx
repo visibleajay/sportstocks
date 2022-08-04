@@ -7,6 +7,7 @@ import { FieldError } from "~/components/fieldError";
 import OtpInput from "react-otp-input";
 
 import back from "~/icons/back.png";
+import { createUserSession } from "~/session.server";
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
@@ -14,22 +15,30 @@ export async function action({ request }: ActionArgs) {
   const otp = formData.get("otp");
 
   const userId = formData.get("userId") + "";
+
+  // Verify OTP and redirect to dashboard.
   if (userId && otp) {
     const otpNum = parseInt(otp + "");
     if (isNaN(otpNum)) {
       return json({ errors: { otp: "Invalid otp" } }, { status: 400 });
     }
 
-    const user = await verifyOTP(userId, otpNum);
-    if (user) {
-      return user;
-    } else {
+    const isVerified = await verifyOTP(userId, otpNum);
+
+    if (!isVerified) {
       return json({ errors: { otp: "Invalid otp" } }, { status: 400 });
     }
+
+    return createUserSession({
+      request,
+      userId: userId,
+      remember: true,
+      redirectTo: "/",
+    });
   }
 
   const mobileRegex = /^\d{10}$/;
-  if (isNaN(parseInt(mobile+"")) || !mobileRegex.test(mobile + "")) {
+  if (isNaN(parseInt(mobile + "")) || !mobileRegex.test(mobile + "")) {
     return json(
       { errors: { mobile: "Please enter a valid mobile number" } },
       { status: 400 }

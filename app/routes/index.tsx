@@ -1,5 +1,9 @@
 import { useLoaderData } from "@remix-run/react";
-import type { LoaderArgs, ActionArgs, ActionFunction } from "@remix-run/node";
+import {
+  LoaderArgs,
+  ActionArgs,
+  redirect,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import Header from "./stocks/header";
 import List from "./stocks/list";
@@ -12,12 +16,18 @@ import {
   getTransactions,
 } from "~/models/game.server";
 import type { Match, Player, Transaction } from "~/models/game.server";
-import { getUserID } from "~/models/login.server";
+import { useOptionalUser } from "~/utils";
+import type { User } from "~/models/login.server";
+import { getUser } from "~/session.server";
 
 export type NormalizedPlayer = {
   [key: string]: Player;
 };
 export async function loader({ request, params }: LoaderArgs) {
+  const user = await getUser(request);
+  if (!user) {
+    return redirect("/login");
+  }
   const matches: Match[] = await getMatches();
   const transactions: Transaction[] = await getTransactions();
   const players: Player[] = await getPlayers();
@@ -102,6 +112,8 @@ export default function StockIndexPages() {
     players,
   } = useLoaderData<typeof loader>();
 
+  const user: User | undefined = useOptionalUser();
+  console.log({ user });
   return (
     <>
       <Header />
