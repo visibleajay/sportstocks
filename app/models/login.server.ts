@@ -15,7 +15,7 @@ export async function createUser(mobile: number) {
   }
   const { otp: a1, ...userWithoutOTP } = user;
 
-  await sendMessage(user);
+  sendMessage(user);
 
   return userWithoutOTP;
 }
