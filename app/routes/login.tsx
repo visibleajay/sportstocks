@@ -1,5 +1,5 @@
 import { ActionArgs, json } from "@remix-run/node";
-import { Form, useActionData, useSubmit } from "@remix-run/react";
+import { Form, Link, useActionData, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { createUser, verifyOTP } from "~/models/login.server";
 
@@ -138,6 +138,16 @@ export default function LoginAge() {
                         sError={actionData?.errors?.mobile}
                       />
                     </div>
+                    <div className="my-2 w-full text-sm">
+                      By continuing, you agree to{" "}
+                      <Link
+                        to="/termconditions"
+                        className="text-blue-700 underline"
+                      >
+                        terms and conditions
+                      </Link>{" "}
+                      of app.
+                    </div>
                     <div className="my-5 flex w-full flex-col">
                       <button
                         type="submit"
@@ -217,6 +227,16 @@ export default function LoginAge() {
                                 errors={{}}
                                 sError={actionData?.errors?.otp}
                               />
+                            </div>
+                            <div className="my-2 w-full text-sm">
+                              By continuing, you agree to{" "}
+                              <Link
+                                to="/termconditions"
+                                className="text-blue-700 underline"
+                              >
+                                terms and conditions
+                              </Link>{" "}
+                              of app.
                             </div>
                             <div className="my-5 flex w-full flex-col">
                               <button
