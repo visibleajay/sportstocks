@@ -1,10 +1,7 @@
-import Header from "./stocks/header";
-
 export default function TermsConditions() {
   return (
     <>
-      <Header profile={false} />
-      <div className={`h-full w-full p-10 mt-12`}>
+      <div className="h-full w-full p-10">
         <div className="flex flex-row">
           <div className="flex flex-col">
             <ol className="list-decimal [&>*]:p-1">

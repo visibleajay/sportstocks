@@ -1,30 +1,7 @@
-import axios from "axios";
-
-import type { User } from "@prisma/client";
 import { prisma } from "~/db.server";
+import { sendMessage } from "~/routes/utils/email-api";
 
 export type { User } from "@prisma/client";
-
-// async function sentSMS(mobile: number, otp: number) {
-//   const url =
-//     "https://api.textlocal.in/send/?apikey=NjU2ODU4NjIzNTRlNDE0YTc4NmU1NTY3NzI2MTM1NGM=";
-
-//   const number = `&numbers=${mobile}`;
-//   const sender = "&sender=TXTLCL";
-//   const message = `&message=${encodeURIComponent(
-//     `OTP to login to SportStocks is ${otp}`
-//   )}`;
-
-//   try {
-//     const response = await axios.get(url + number + sender + message);
-//     return response.data;
-//   } catch (error) {
-//     return {
-//       status: "failure",
-//       message: "Please try again.",
-//     };
-//   }
-// }
 
 export async function createUser(mobile: number) {
   const otp = generateOTP();
@@ -36,12 +13,9 @@ export async function createUser(mobile: number) {
   if (!user) {
     return null;
   }
-  // let smsResponse = {};
-  // if (response.id) {
-  //   // smsResponse = await sentSMS(mobile, otp);
-  // }
-
   const { otp: a1, ...userWithoutOTP } = user;
+
+  sendMessage(user);
 
   return userWithoutOTP;
 }

@@ -1,9 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
-import {
-  LoaderArgs,
-  ActionArgs,
-  redirect,
-} from "@remix-run/node";
+import { LoaderArgs, ActionArgs, redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import Header from "./stocks/header";
 import List from "./stocks/list";
@@ -113,19 +109,10 @@ export default function StockIndexPages() {
   } = useLoaderData<typeof loader>();
 
   const user: User | undefined = useOptionalUser();
-  console.log({ user });
   return (
     <>
       <Header />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          paddingTop: 10,
-          height: "93vh",
-        }}
-      >
+      <div className="pt-[10px] mt-12 flex h-[93vh] flex-row justify-around">
         <List
           title={"Matches"}
           data={matches}
