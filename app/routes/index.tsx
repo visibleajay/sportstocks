@@ -20,10 +20,10 @@ export type NormalizedPlayer = {
   [key: string]: Player;
 };
 export async function loader({ request, params }: LoaderArgs) {
-  // const user = await getUser(request);
-  // if (!user) {
-  //   return redirect("/login");
-  // }
+  const user = await getUser(request);
+  if (!user) {
+    return redirect("/login");
+  }
   const matches: Match[] = await getMatches();
   const transactions: Transaction[] = await getTransactions();
   const players: Player[] = await getPlayers();
