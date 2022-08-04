@@ -43,6 +43,7 @@ export async function createUser(mobile: number) {
 
   const { otp: a1, ...userWithoutOTP } = user;
 
+  console.log({ otp });
   return userWithoutOTP;
 }
 
