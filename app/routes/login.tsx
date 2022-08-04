@@ -29,10 +29,7 @@ export async function action({ request }: ActionArgs) {
   }
 
   const mobileRegex = /^\d{10}$/;
-
-  // @ts-ignore
-  const mobile_number = +mobile;
-  if (isNaN(mobile_number) || !mobileRegex.test(mobile + "")) {
+  if (isNaN(parseInt(mobile+"")) || !mobileRegex.test(mobile + "")) {
     return json(
       { errors: { mobile: "Please enter a valid mobile number" } },
       { status: 400 }
