@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { action } from "..";
-import { createTransaction } from "~/models/game.server";
+import { FieldError } from "~/components/fieldError";
 
 const validationSchema = yup.object().shape({
   player: yup.string().required("Player is required!"),
@@ -53,8 +53,7 @@ export default function AddOrder({
   });
 
   useEffect(() => {
-    // @ts-ignore
-    if (actionData && actionData.hasOwnProperty("id") && actionData?.id.length) {
+    if (actionData && actionData.hasOwnProperty("id")) {
       reset(initial_values);
       onClose(false);
     }
@@ -125,7 +124,12 @@ export default function AddOrder({
                   );
                 })}
               </Select>
-              <FieldError name="player" errors={errors} />
+              <FieldError
+                name="player"
+                errors={errors}
+                // @ts-ignore
+                sError={actionData?.errors?.player}
+              />
             </div>
 
             <div className="flex flex-row space-x-5">
@@ -137,7 +141,12 @@ export default function AddOrder({
                   className={`form-control`}
                   type="number"
                 />
-                <FieldError name="min" errors={errors} />
+                <FieldError
+                  name="min"
+                  errors={errors}
+                  // @ts-ignore
+                  sError={actionData?.errors?.min}
+                />
               </div>
               <div className="flex-1">
                 <TextField
@@ -147,7 +156,12 @@ export default function AddOrder({
                   className={`form-control`}
                   type="number"
                 />
-                <FieldError name="max" errors={errors} />
+                <FieldError
+                  name="max"
+                  errors={errors}
+                  // @ts-ignore
+                  sError={actionData?.errors?.max}
+                />
               </div>
             </div>
 
@@ -160,7 +174,12 @@ export default function AddOrder({
                   className={`form-control`}
                   type="number"
                 />
-                <FieldError name="quantity" errors={errors} />
+                <FieldError
+                  name="quantity"
+                  errors={errors}
+                  // @ts-ignore
+                  sError={actionData?.errors?.quantity}
+                />
               </div>
               <div>
                 <TextField
@@ -171,7 +190,12 @@ export default function AddOrder({
                   className={`form-control`}
                   type="number"
                 />
-                <FieldError name="price" errors={errors} />
+                <FieldError
+                  name="price"
+                  errors={errors}
+                  // @ts-ignore
+                  sError={actionData?.errors?.price}
+                />
               </div>
             </div>
 
@@ -188,25 +212,6 @@ export default function AddOrder({
       </div>
     </div>
   );
-}
-
-function Error(props: JSX.IntrinsicElements["div"]) {
-  return <div {...props} className="mx-0.5 text-xs text-red-700" />;
-}
-function ServerError({ name }: { name: string }) {
-  // @ts-ignore
-  const errors = useActionData<typeof action>()?.errors;
-  const message = errors?.name?.message;
-  if (!message) return null;
-  return <Error>{message}</Error>;
-}
-
-function FieldError({ name, errors }: { name: string; errors: any }) {
-  const message = errors[name]?.message;
-  if (message) {
-    return <Error>{message}</Error>;
-  }
-  return <ServerError name={name} />;
 }
 
 type Order = {

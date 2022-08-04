@@ -1,19 +1,46 @@
 import { ActionArgs, json } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
-import { useEffect } from "react";
-import { createUser } from "~/models/login.server";
+import { Form, useActionData, useSubmit } from "@remix-run/react";
+import { useEffect, useState } from "react";
+import { createUser, verifyOTP } from "~/models/login.server";
+
+import { FieldError } from "~/components/fieldError";
+import OtpInput from "react-otp-input";
+
+import back from "~/icons/back.png";
+import { createUserSession } from "~/session.server";
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
   const mobile = formData.get("mobile");
+  const otp = formData.get("otp");
+
+  const userId = formData.get("userId") + "";
+
+  // Verify OTP and redirect to dashboard.
+  if (userId && otp) {
+    const otpNum = parseInt(otp + "");
+    if (isNaN(otpNum)) {
+      return json({ errors: { otp: "Invalid otp" } }, { status: 400 });
+    }
+
+    const isVerified = await verifyOTP(userId, otpNum);
+
+    if (!isVerified) {
+      return json({ errors: { otp: "Invalid otp" } }, { status: 400 });
+    }
+
+    return createUserSession({
+      request,
+      userId: userId,
+      remember: true,
+      redirectTo: "/",
+    });
+  }
 
   const mobileRegex = /^\d{10}$/;
-
-  // @ts-ignore
-  const mobile_number = +mobile;
-  if (isNaN(mobile_number) || !mobileRegex.test(mobile + "")) {
+  if (isNaN(parseInt(mobile + "")) || !mobileRegex.test(mobile + "")) {
     return json(
-      { error: { mobile: "Please enter a valid mobile number" } },
+      { errors: { mobile: "Please enter a valid mobile number" } },
       { status: 400 }
     );
   }
@@ -23,11 +50,26 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function LoginAge() {
+  const [otp, setOTP] = useState("");
+  const [isMobileScreen, setMobileScreen] = useState(true);
+  const [mobileError, setMobileError] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState("");
+
+  const submit = useSubmit();
   const actionData = useActionData();
 
   useEffect(() => {
-    if (actionData) console.log({ actionData });
+    if (actionData && actionData.id) {
+      setMobileScreen(false);
+    }
   }, [actionData]);
+
+  useEffect(() => {
+    const isValidOTP = otp && !isNaN(parseInt(otp + "")) && otp.length === 6;
+    if (isValidOTP && actionData && actionData.id) {
+      submit({ otp, userId: actionData.id }, { method: "post" });
+    }
+  }, [otp]);
 
   return (
     <div className="bg-gradient-to-br from-violet-100 to-white antialiased">
@@ -51,44 +93,147 @@ export default function LoginAge() {
                 method="post"
                 className="w-full"
                 onSubmit={(event: any) => {
-                  // handleSubmit(() => submit(event.target))(event);
+                  if (isMobileScreen && mobileNumber.length < 10) {
+                    setMobileError(true);
+                    event.preventDefault();
+                  } else if (!isMobileScreen) {
+                    event.preventDefault();
+                  }
                 }}
+                noValidate={true}
               >
-                <div className="my-5 flex w-full flex-col">
-                  <label className="mb-2 text-gray-500">Mobile Number</label>
-                  <input
-                    type="text"
-                    name="mobile"
-                    placeholder="Please insert your mobile number"
-                    className="appearance-none rounded-lg border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-                  />
-                </div>
-                <div className="my-5 flex w-full flex-col">
-                  <button
-                    type="submit"
-                    className="w-full rounded-lg bg-green-600 py-4 text-green-100"
-                  >
-                    <div className="flex flex-row items-center justify-center">
-                      <div className="mr-2">
-                        <svg
-                          className="h-6 w-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                          ></path>
-                        </svg>
-                      </div>
-                      <div className="font-bold">Get OTP</div>
+                {isMobileScreen ? (
+                  <>
+                    <div className="mb-5 flex w-full flex-col">
+                      <label className="mb-2 text-gray-500">
+                        Mobile Number
+                      </label>
+                      <input
+                        type="text"
+                        name="mobile"
+                        placeholder="Please insert your mobile number"
+                        className="appearance-none rounded-lg border-2 border-gray-100 px-4 py-3 placeholder-gray-300 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+                        value={mobileNumber}
+                        onChange={(event) => {
+                          const { value } = event.target;
+                          if (value?.length && isNaN(parseInt(value))) {
+                            return;
+                          }
+                          setMobileNumber(value);
+                        }}
+                        maxLength={10}
+                      />
+                      <FieldError
+                        name="mobile"
+                        errors={
+                          mobileError && mobileNumber.length < 10
+                            ? {
+                                mobile: {
+                                  message:
+                                    "Please enter a 10 digit mobile number",
+                                },
+                              }
+                            : {}
+                        }
+                        sError={actionData?.errors?.mobile}
+                      />
                     </div>
-                  </button>
-                </div>
+                    <div className="my-5 flex w-full flex-col">
+                      <button
+                        type="submit"
+                        className="w-full rounded-lg bg-green-600 py-4 text-gray-100 hover:bg-green-700 active:bg-green-800"
+                      >
+                        <div className="flex flex-row items-center justify-center">
+                          <div className="mr-2">
+                            <svg
+                              className="h-6 w-6"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                              ></path>
+                            </svg>
+                          </div>
+                          <div className="font-bold">Get OTP</div>
+                        </div>
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="container mx-auto">
+                      <div className="mx-auto max-w-sm md:max-w-lg">
+                        <div className="w-full">
+                          <div className="h-64 rounded bg-white py-3 text-center">
+                            <div className="flex flex-row items-center">
+                              <img
+                                className="cursor-pointer rounded-md hover:bg-violet-200 active:bg-violet-300"
+                                alt="backIcon"
+                                src={back}
+                                onClick={() => setMobileScreen(true)}
+                              />
+                              <h1 className="flex-1 text-2xl font-bold">
+                                OTP Verification
+                              </h1>
+                            </div>
+
+                            <div className="mt-4 flex flex-col">
+                              <span>Enter the OTP you received at</span>
+                              <span className="font-bold">+91 ******876</span>
+                            </div>
+
+                            <div
+                              id="otp"
+                              className="mt-5 flex flex-col justify-center px-2 text-center"
+                            >
+                              <OtpInput
+                                value={otp}
+                                onChange={setOTP}
+                                numInputs={6}
+                                separator={
+                                  <span>
+                                    <strong>.</strong>
+                                  </span>
+                                }
+                                inputStyle={{
+                                  width: "2rem",
+                                  height: "2rem",
+                                  margin: "0 1rem",
+                                  fontSize: "1rem",
+                                  borderRadius: 4,
+                                  border: "1px solid rgba(0,0,0,0.3)",
+                                }}
+                              />
+                            </div>
+                            <div className="my-1 flex w-full">
+                              <FieldError
+                                name="otp"
+                                errors={{}}
+                                sError={actionData?.errors?.otp}
+                              />
+                            </div>
+                            <div className="my-5 flex w-full flex-col">
+                              <button
+                                type="submit"
+                                className="w-full rounded-lg bg-blue-600 py-4 text-gray-100 hover:bg-blue-700 active:bg-blue-800"
+                              >
+                                <div className="flex flex-row items-center justify-center">
+                                  <div className="font-bold">Resend OTP</div>
+                                </div>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </Form>
             </div>
           </div>
