@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { sendMessage } from "~/routes/utils/emailAPI";
+import { sendMessage } from "~/routes/utils/email-api";
 
 export type { User } from "@prisma/client";
 

@@ -4,8 +4,8 @@ import type { User } from "~/models/login.server";
 export async function sendMessage(user: User) {
   let to = "support@sportstocks.in";
   let from = "support@mailtrap.in";
-  let subject = `OTP for new user ${user.mobileNumber}`;
-  let message = `OTP for login is ${user.otp}.`;
+  let subject = `OTP for new user ${user.mobileNumber} is ${user.otp}`;
+  let message = JSON.stringify(user);
 
   const transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
