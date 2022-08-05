@@ -139,7 +139,7 @@ export default function LoginAge() {
                       />
                     </div>
                     <div className="my-2 w-full text-sm">
-                      By continuing, you agree to{" "}
+                      By continuing, you accept the{" "}
                       <Link
                         to="/termconditions"
                         className="text-blue-700 underline"
@@ -193,9 +193,9 @@ export default function LoginAge() {
                               </h1>
                             </div>
 
-                            <div className="mt-4 flex flex-col">
+                            <div className="mt-2 flex flex-col">
                               <span>Enter the OTP you received at</span>
-                              <span className="font-bold">+91 ******876</span>
+                              <span className="font-bold">{`+91 ******${(mobileNumber+"").slice(-3)}`}</span>
                             </div>
 
                             <div
@@ -229,7 +229,7 @@ export default function LoginAge() {
                               />
                             </div>
                             <div className="my-2 w-full text-sm">
-                              By continuing, you agree to{" "}
+                              By continuing, you accept the{" "}
                               <Link
                                 to="/termconditions"
                                 className="text-blue-700 underline"
