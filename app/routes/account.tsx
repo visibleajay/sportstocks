@@ -12,7 +12,7 @@ export async function loader({ request, params }: LoaderArgs) {
   return user;
 }
 
-export default function MyProfile() {
+export default function Account() {
   return (
     <>
       <Header />

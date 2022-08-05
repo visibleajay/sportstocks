@@ -10,7 +10,7 @@ export default function PointSystem() {
 
 const Fielder = () => (
   <table className="table-auto">
-    <thead className="border bg-gray-100">
+    <thead className="bg-gray-100">
       <tr>
         <th className="border-b text-xl" colSpan={4}>
           Fielding
@@ -123,7 +123,7 @@ const Fielder = () => (
 
 const Bowler = () => (
   <table className="table-auto">
-    <thead className="border bg-gray-100">
+    <thead className="bg-gray-100">
       <tr>
         <th className="border-b py-4 text-xl" colSpan={4}>
           Bowler
@@ -340,7 +340,7 @@ const Bowler = () => (
 
 const Batsman = () => (
   <table className="table-auto">
-    <thead className="border bg-gray-100">
+    <thead className="bg-gray-100">
       <tr>
         <th className="border-b py-4 text-xl" colSpan={4}>
           BATSMAN

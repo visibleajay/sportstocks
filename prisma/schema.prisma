@@ -62,3 +62,11 @@ model Transaction {
   completedBy   String?
   completedUser User?   @relation(name: "CompletedTransaction", fields: [completedBy], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
+
+model Feedback {
+  id        String   @id @default(cuid())
+  email     String
+  feedback  String
+  userId    String?
+  createdAt DateTime @default(now())
+}
