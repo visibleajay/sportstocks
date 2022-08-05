@@ -193,9 +193,9 @@ export default function LoginAge() {
                               </h1>
                             </div>
 
-                            <div className="mt-4 flex flex-col">
+                            <div className="mt-2 flex flex-col">
                               <span>Enter the OTP you received at</span>
-                              <span className="font-bold">+91 ******876</span>
+                              <span className="font-bold">{`+91 ******${(mobileNumber+"").slice(-3)}`}</span>
                             </div>
 
                             <div
