@@ -139,7 +139,7 @@ export default function LoginAge() {
                       />
                     </div>
                     <div className="my-2 w-full text-sm">
-                      By continuing, you agree to{" "}
+                      By continuing, you accept the{" "}
                       <Link
                         to="/termconditions"
                         className="text-blue-700 underline"
@@ -229,7 +229,7 @@ export default function LoginAge() {
                               />
                             </div>
                             <div className="my-2 w-full text-sm">
-                              By continuing, you agree to{" "}
+                              By continuing, you accept the{" "}
                               <Link
                                 to="/termconditions"
                                 className="text-blue-700 underline"

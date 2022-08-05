@@ -7,7 +7,7 @@ export default function Header({ profile = true }: { profile?: boolean }) {
         SportStocks
       </Link>
       {profile && (
-        <Link to="/profile" className="text-black">
+        <Link to="/account" className="text-black">
           100
         </Link>
       )}

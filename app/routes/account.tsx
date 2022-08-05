@@ -16,11 +16,11 @@ export default function MyProfile() {
   return (
     <>
       <Header />
-      <div className="flex flex-row mt-12">
-        <aside className="w-64 pt-4 px-4" aria-label="Sidebar">
+      <div className="mt-12 flex flex-row">
+        <aside className="w-64 px-4 pt-4" aria-label="Sidebar">
           <div className="overflow-y-auto rounded bg-gray-50 py-4 px-3 dark:bg-gray-800">
             <ul className="space-y-2">
-              <li>
+              {/* <li>
                 <Link
                   to="/"
                   className="flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
@@ -37,11 +37,11 @@ export default function MyProfile() {
                   </svg>
                   <span className="ml-3">Dashboard</span>
                 </Link>
-              </li>
+              </li> */}
               <li>
-                <a
-                  href="#"
-                  className="flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                <Link
+                  to="/account/pointsystem"
+                  className="flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 active:bg-gray-200 dark:text-white dark:hover:bg-gray-700"
                 >
                   <svg
                     aria-hidden="true"
@@ -55,11 +55,11 @@ export default function MyProfile() {
                   <span className="ml-3 flex-1 whitespace-nowrap">
                     Points System
                   </span>
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+              <Link
+                  to="/account/profile"
                   className="flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 >
                   <svg
@@ -76,11 +76,11 @@ export default function MyProfile() {
                     ></path>
                   </svg>
                   <span className="ml-3 flex-1 whitespace-nowrap">Profile</span>
-                </a>
+                </Link>
               </li>
               <li>
                 <Link
-                  to="/profile/termconditions"
+                  to="/account/termconditions"
                   className="flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                 >
                   <svg
@@ -98,6 +98,29 @@ export default function MyProfile() {
                   </svg>
                   <span className="ml-3 flex-1 whitespace-nowrap">
                     Terms & Conditions
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/account/contactus"
+                  className="flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span className="ml-3 flex-1 whitespace-nowrap">
+                    Contact US
                   </span>
                 </Link>
               </li>
@@ -128,7 +151,7 @@ export default function MyProfile() {
             </ul>
           </div>
         </aside>
-        <div className="w-full h-[90%]">
+        <div className="h-[90%] w-full">
           <Outlet />
         </div>
       </div>
