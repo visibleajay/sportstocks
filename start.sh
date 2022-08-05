@@ -7,4 +7,5 @@
 
 set -ex
 npx prisma migrate deploy
+npx prisma seed db
 npm run start
