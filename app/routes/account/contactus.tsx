@@ -29,12 +29,9 @@ export default function ContactUS() {
       <div className="pt-10 pb-20 text-gray-500">
         <div className="container mx-auto flex flex-col justify-center md:flex-row">
           <div className="mr-2 flex w-full flex-col bg-gray-100 p-8 p-6 dark:bg-gray-800 sm:rounded-lg lg:w-1/3">
-            <h1 className="text-4xl font-extrabold tracking-tight text-gray-800 dark:text-white sm:text-5xl">
+            <h4 className="text-xl font-extrabold tracking-tight text-gray-800 dark:text-white sm:text-5xl">
               Get in touch
-            </h1>
-            <p className="text-normal mt-2 text-lg font-medium text-gray-600 dark:text-gray-400 sm:text-2xl">
-              Fill in the form to start a conversation
-            </p>
+            </h4>
 
             {/* <div className="mt-8 flex items-center text-gray-600 dark:text-gray-400">
               <svg
@@ -64,7 +61,7 @@ export default function ContactUS() {
               </div>
             </div> */}
 
-            <div className="mt-4 flex items-center text-gray-600 dark:text-gray-400">
+            {/* <div className="mt-4 flex items-center text-gray-600 dark:text-gray-400">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -84,9 +81,9 @@ export default function ContactUS() {
               <div className="text-md ml-4 w-40 font-semibold tracking-wide">
                 +44 1234567890
               </div>
-            </div>
+            </div> */}
 
-            <div className="mt-2 flex items-center text-gray-600 dark:text-gray-400">
+            <div className="mt-12 flex items-center text-gray-600 dark:text-gray-400">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -104,7 +101,7 @@ export default function ContactUS() {
                 />
               </svg>
               <div className="text-md ml-4 w-40 font-semibold tracking-wide">
-                info@acme.org
+                support@sportstocks.in
               </div>
             </div>
           </div>
