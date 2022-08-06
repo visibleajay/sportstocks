@@ -52,6 +52,11 @@ export default function AddOrder({
     resolver: yupResolver(validationSchema),
   });
 
+  const userId =
+    typeof window !== "undefined" &&
+    window.localStorage &&
+    window.localStorage.getItem("userId");
+
   useEffect(() => {
     if (actionData && actionData.hasOwnProperty("id")) {
       reset(initial_values);
@@ -101,11 +106,7 @@ export default function AddOrder({
               handleSubmit(() => submit(event.target))(event);
             }}
           >
-            <input
-              type="hidden"
-              name="userId"
-              value="cl6apo2830009uuozlgjtejt6"
-            />
+            <input type="hidden" name="userId" value={userId || ""} />
             <input type="hidden" name="type" value={stockType} />
             <div className="w-full flex-1">
               <InputLabel id="selectPlayer">Select Player</InputLabel>

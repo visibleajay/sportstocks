@@ -1,13 +1,9 @@
 import { prisma } from "~/db.server";
 import { sentSMS } from "~/routes/utils/email-api";
 
-export type { User } from "@prisma/client";
-
-export async function createUser(mobile: number) {
-  const otp = generateOTP();
-
+export async function createUser(mobile: string, otp: number) {
   const user = await prisma.user.create({
-    data: { mobileNumber: mobile + "", otp },
+    data: { mobileNumber: mobile, otp },
   });
 
   if (!user) {
@@ -18,19 +14,6 @@ export async function createUser(mobile: number) {
   await sentSMS(user);
 
   return userWithoutOTP;
-}
-
-export async function getUserById(userId: string) {
-  return prisma.user.findUnique({ where: { id: userId } });
-}
-
-function generateOTP() {
-  const digits = "123456789";
-  let OTP = "";
-  for (let i = 0; i < 6; i++) {
-    OTP += digits[Math.floor(Math.random() * 9)];
-  }
-  return +OTP;
 }
 
 export async function verifyOTP(userId: string, otp: number) {

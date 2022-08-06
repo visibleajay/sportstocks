@@ -1,4 +1,5 @@
-import { ActionArgs, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
 import { Form, Link, useActionData, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { createUser, verifyOTP } from "~/models/login.server";
@@ -8,6 +9,9 @@ import OtpInput from "react-otp-input";
 
 import back from "~/icons/back.png";
 import { createUserSession } from "~/session.server";
+import { getUserByMobile, updateOTPInUser } from "~/models/user.server";
+import { sentSMS } from "./utils/email-api";
+import { generateOTP } from "./utils/helper";
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
@@ -45,8 +49,16 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  // @ts-ignore
-  return createUser(mobile);
+  const newOTP = generateOTP();
+  const user = await getUserByMobile(mobile + "");
+  if (!user) {
+    return createUser(mobile + "", newOTP);
+  }
+
+  const updateUser = await updateOTPInUser(user["id"], newOTP);
+
+  await sentSMS(updateUser);
+  return updateUser;
 }
 
 export default function LoginAge() {
@@ -54,22 +66,25 @@ export default function LoginAge() {
   const [isMobileScreen, setMobileScreen] = useState(true);
   const [mobileError, setMobileError] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
+  const [userId, setUserId] = useState("");
 
   const submit = useSubmit();
   const actionData = useActionData();
 
   useEffect(() => {
     if (actionData && actionData.id) {
+      setUserId(actionData.id);
       setMobileScreen(false);
     }
   }, [actionData]);
 
   useEffect(() => {
     const isValidOTP = otp && !isNaN(parseInt(otp + "")) && otp.length === 6;
-    if (isValidOTP && actionData && actionData.id) {
-      submit({ otp, userId: actionData.id }, { method: "post" });
+    if (isValidOTP && userId.length) {
+      window.localStorage.setItem("userId", userId);
+      submit({ otp, userId }, { method: "post" });
     }
-  }, [otp]);
+  }, [otp, userId]);
 
   return (
     <div className="bg-gradient-to-br from-violet-100 to-white antialiased">
@@ -195,7 +210,9 @@ export default function LoginAge() {
 
                             <div className="mt-2 flex flex-col">
                               <span>Enter the OTP you received at</span>
-                              <span className="font-bold">{`+91 ******${(mobileNumber+"").slice(-3)}`}</span>
+                              <span className="font-bold">{`+91 ******${(
+                                mobileNumber + ""
+                              ).slice(-3)}`}</span>
                             </div>
 
                             <div

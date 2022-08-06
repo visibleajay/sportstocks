@@ -1,6 +1,7 @@
 import { Feedback } from "@prisma/client";
 import nodemailer from "nodemailer";
-import type { User } from "~/models/login.server";
+
+import type { User } from "~/models/user.server";
 
 export async function sendMessage(feedback: Feedback) {
   let to = "support@sportstocks.in";
