@@ -1,5 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
-import { LoaderArgs, ActionArgs, redirect } from "@remix-run/node";
+import {redirect} from "@remix-run/node";
+import type { LoaderArgs, ActionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import Header from "./stocks/header";
 import List from "./stocks/list";
@@ -12,9 +13,9 @@ import {
   getTransactions,
 } from "~/models/game.server";
 import type { Match, Player, Transaction } from "~/models/game.server";
-import { useOptionalUser } from "~/utils";
-import type { User } from "~/models/login.server";
+
 import { getUser } from "~/session.server";
+import { getUserById } from "~/models/user.server";
 
 export type NormalizedPlayer = {
   [key: string]: Player;
@@ -34,6 +35,7 @@ export async function loader({ request, params }: LoaderArgs) {
   });
 
   return json({
+    user,
     matches,
     transactions,
     players: normalizedPlayer,
@@ -78,7 +80,7 @@ export async function action({ request }: ActionArgs) {
   }
 
   // @ts-ignore
-  const user = await getUserID(userId);
+  const user = await getUserById(userId);
   if (!user) {
     return json({ errors: { userId: "User is missing" } }, { status: 400 });
   }
@@ -108,7 +110,6 @@ export default function StockIndexPages() {
     players,
   } = useLoaderData<typeof loader>();
 
-  const user: User | undefined = useOptionalUser();
   return (
     <>
       <Header />

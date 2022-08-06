@@ -1,17 +1,20 @@
 import type { User } from "@prisma/client";
-import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
 
 export type { User } from "@prisma/client";
 
-// export async function getUserById(id: User["id"]) {
-//   return prisma.user.findUnique({ where: { id } });
-// }
+export async function getUserById(id: User["id"]) {
+  return prisma.user.findUnique({ where: { id } });
+}
 
-// export async function getUserByEmail(email) {
-//   return prisma.user.findUnique({ where: { email } });
-// }
+export async function getUserByMobile(mobile: User["mobileNumber"]) {
+  return prisma.user.findUnique({ where: { mobileNumber: mobile } });
+}
+
+export async function updateOTPInUser(userId: User["id"], otp: User["otp"]) {
+  return prisma.user.update({ where: { id: userId }, data: { otp } });
+}
 
 // export async function createUser(email: User["email"], password: string) {
 //   const hashedPassword = await bcrypt.hash(password, 10);
