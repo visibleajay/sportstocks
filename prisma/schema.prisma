@@ -11,26 +11,19 @@ model User {
   id           String   @id @default(cuid())
   mobileNumber String   @unique
   otp          Int
-  token        String   @default("")
+  amount       Int @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   // transaction Transaction[] @relation("GeneratedTransaction")
   completedTransaction Transaction[] @relation("CompletedTransaction")
-  Password             Password?
-}
-
-model Password {
-  hash   String
-  userId String @unique
-  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Match {
   id      String   @id @default(cuid())
   team1   String
   team2   String
-  type    String
+  type    String // odi, test, t20
   date    String
   players Player[]
 }
@@ -39,9 +32,9 @@ model Player {
   id          String        @id @default(cuid())
   name        String
   team        String
-  type        String
+  type        String // batsman, bowler, all_rounder
   score       Int
-  status      String
+  status      String // out, not_out, ytp.
   matchId     String
   match       Match         @relation(fields: [matchId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   transaction Transaction[]

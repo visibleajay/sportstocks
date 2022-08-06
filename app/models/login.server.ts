@@ -1,5 +1,5 @@
 import { prisma } from "~/db.server";
-import { sendMessage } from "~/routes/utils/email-api";
+import { sentSMS } from "~/routes/utils/email-api";
 
 export type { User } from "@prisma/client";
 
@@ -15,7 +15,7 @@ export async function createUser(mobile: number) {
   }
   const { otp: a1, ...userWithoutOTP } = user;
 
-  sendMessage(user);
+  await sentSMS(user);
 
   return userWithoutOTP;
 }
