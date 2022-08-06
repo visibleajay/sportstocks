@@ -78,10 +78,10 @@ export async function action({ request }: ActionArgs) {
   }
 
   // @ts-ignore
-  // const user = await getUserID(userId);
-  // if (!user) {
-  //   return json({ errors: { userId: "User is missing" } }, { status: 400 });
-  // }
+  const user = await getUserID(userId);
+  if (!user) {
+    return json({ errors: { userId: "User is missing" } }, { status: 400 });
+  }
 
   return createTransaction({
     // @ts-ignore
@@ -97,7 +97,7 @@ export async function action({ request }: ActionArgs) {
     // @ts-ignore
     quantity: +quantity,
     // @ts-ignore
-    generatedBy: userId,
+    generatedBy: user.id,
   });
 }
 

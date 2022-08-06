@@ -126,7 +126,7 @@ const Bowler = () => (
     <thead className="bg-gray-100">
       <tr>
         <th className="border-b py-4 text-xl" colSpan={4}>
-          Bowler
+          Bowling
         </th>
       </tr>
       <tr>
@@ -343,7 +343,7 @@ const Batsman = () => (
     <thead className="bg-gray-100">
       <tr>
         <th className="border-b py-4 text-xl" colSpan={4}>
-          BATSMAN
+          Batting
         </th>
       </tr>
       <tr>
